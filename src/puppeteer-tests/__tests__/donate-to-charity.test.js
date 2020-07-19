@@ -18,7 +18,9 @@ const baseSite = targetServers[config.site];
 const protocol = config.site === 'local' ? 'http://' : 'https://';
 
 let url = `${baseSite}`;
-const charityName = "tbd";
+
+// This test depends on Oxfam already being in the charity database.
+const charityName = "oxfam";
 
 describe("Charity donation tests", () => {
 
@@ -47,7 +49,15 @@ describe("Charity donation tests", () => {
 	}, 90000);
 
 	test("Logged-in charity donation", async () => {
-		await doLogin({ page, username, password });
+		// login
+		await page.click('.login-link');
+		await page.click('[name=email]');
+		await page.type('[name=email]', username);
+		await page.click('[name=password]');
+		await page.type('[name=password]', password);
+		await page.keyboard.press('Enter');
+		// wait for login dialog to disappear
+		await page.waitForSelector('[name=email]', { hidden: true });
 
 		// Search for charity
 		await page.click(Search.Main.SearchField);
@@ -57,8 +67,6 @@ describe("Charity donation tests", () => {
 		// Click on first link in search results
 		await page.waitForSelector(Search.Main.FirstResult);
 		await page.click(Search.Main.FirstResult);
-		await page.waitForSelector('.donate-button');
-		await page.click('.donate-button');
 
 		await donate({
 			page,
