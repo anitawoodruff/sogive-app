@@ -32,16 +32,7 @@ describe('Edit organisation tests', () => {
 		});
 		await page.goto(`${url}#simpleedit?charityId=${charityId}`);
 
-		// log in
-		// TODO(anita): Replace this section with login() utility method used elsewhere.
-		await page.click('.login-link');
-		await page.click('[name=email]');
-		await page.type('[name=email]', username);
-		await page.click('[name=password]');
-		await page.type('[name=password]', password);
-		await page.keyboard.press('Enter');
-		// wait for login dialog to disappear
-		await page.waitForSelector('[name=email]', { hidden: true });
+		await doLogin({ page, username, password });
 
 		// expand the charity profile section
 		// decrease timeout so we fail-fast on this line if it isn't shown.
