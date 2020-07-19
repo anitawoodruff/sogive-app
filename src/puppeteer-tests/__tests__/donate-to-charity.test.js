@@ -18,13 +18,9 @@ const baseSite = targetServers[config.site];
 const protocol = config.site === 'local' ? 'http://' : 'https://';
 
 let url = `${baseSite}`;
+const charityName = "tbd";
 
-describe("!!broken Charity donation tests", () => {
-	
-	// nobbled TODO fix
-	test("!! tests OFF", async () => {
-	});
-	if (true) return;
+describe("Charity donation tests", () => {
 
 	beforeEach(async () => {
 		await page.goto(url);
@@ -33,7 +29,7 @@ describe("!!broken Charity donation tests", () => {
 	test("Logged-out charity donation", async () => {
 		// Search for charity
 		await page.click(Search.Main.SearchField);
-		await page.keyboard.type("oxfam");
+		await page.keyboard.type(charityName);
 		await page.click(Search.Main.SearchButton);
 
 		// Click on first link in search results
@@ -55,7 +51,7 @@ describe("!!broken Charity donation tests", () => {
 
 		// Search for charity
 		await page.click(Search.Main.SearchField);
-		await page.keyboard.type("oxfam");
+		await page.keyboard.type(charityName);
 		await page.click(Search.Main.SearchButton);
 
 		// Click on first link in search results
