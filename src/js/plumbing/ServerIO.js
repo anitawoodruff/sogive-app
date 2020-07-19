@@ -16,8 +16,8 @@ import Messaging, {notifyUser} from '../base/plumbing/Messaging';
 
 import ServerIO from '../base/plumbing/ServerIOBase';
 
-ServerIO.APIBASE = '';
-// ServerIO.APIBASE = 'https://test.sogive.org';
+// ServerIO.APIBASE = '';
+ServerIO.APIBASE = 'https://test.sogive.org';
 // ServerIO.APIBASE = 'https://app.sogive.org';
 
 // ?? use media.good-loop.com??
