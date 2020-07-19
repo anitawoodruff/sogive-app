@@ -45,54 +45,62 @@ const fundraiserIdClip = () => {
 	return fundraiserEditLink.split('/').pop();
 };
 
-describe("!!broken Fundraiser tests", () => {
+jest.setTimeout(30000);
 
-	// nobbled TODO fix
-	test("!! tests OFF", async () => {
-	});
-	if (true) return;
+describe("!!broken Fundraiser tests", () => {
 
 	test("Create a fundraiser", async () => {
 		await page.goto(`${url}#event`);
 
 		// login.
 		await doLogin({ page, username, password });
+		console.log('logged in');
 
-		// Go to event page and click on Register event
-		await page.goto(url + `#event/${eventId}`);
+		// Click on Register event
 		await page.waitForSelector('.btn');
 		await page.click('.btn');
+		console.log('clicked register');
 
 		// Emtpy the basket and add a ticket
 		await page.waitForSelector(Register.EmptyBasket);
 		await page.click(Register.EmptyBasket);
+		console.log('emptied basket');
 
 		await page.waitFor(3000);
 		await page.waitForSelector('.add-first-ticket');
 		await page.click('.add-first-ticket');
 
 		await page.waitFor(1000);
+		console.log('added ticket');
 		await page.waitForSelector(Register.Next);
 		await page.click(Register.Next);
+		console.log('clicked next 1');
 		// Will fail if user is not already logged in
 		await page.waitForSelector(Register.Next);
 		await page.click(Register.Next);
+		console.log('clicked next 2');
 
 		await page.waitFor(1500);
 		await page.waitForSelector(Register.Next);
 		await page.click(Register.Next);
+		console.log('clicked next 3');
 
+		// Sometimes we're still on step 1 here :-/
+		await page.screenshot({path: 'before-selecting-charity-id.png'});
 		await page.waitForSelector('[name=charityId]');
 		await page.type('[name=charityId]', 'oxfam');
+		console.log('typed oxfam');
 		await page.waitFor(3000);
 
 		await page.waitForSelector(Register.Next);
 		await page.click(Register.Next);
+		console.log('clicked next');
 
 		//Checkout
 		//Special case to deal with button being different where event ticket price is set to £0
 		if ((await page.$(Register.FreeTicketSubmit)) !== null) {
 			await page.click(Register.FreeTicketSubmit);
+			console.log('clicked register free ticket submit');
 		} else {
 			await fillInForm({
 				page,
@@ -100,25 +108,37 @@ describe("!!broken Fundraiser tests", () => {
 				Selectors: General.CharityPageImpactAndDonate
 			});
 			await page.click(Register.TestSubmit);
+			console.log('clicked register test ticket submit');
 		}
 
 		// Setting up the actual fundraiser
 		await page.waitForSelector(Register.SetupFundraiser);
 		await page.click(Register.SetupFundraiser);
+		console.log('clicked s');
 		await page.waitForSelector(
 			`#editFundraiser > div > div.padded-block > div:nth-child(5) > div > div.pull-left > div`
 		);
 		fundraiserEditLink = await page.url();
 		fundraiserId = await fundraiserIdClip();
+		console.log('cached fundraiser details');
+
 		await fillInForm({
 			page,
 			data: fundraiserData.EditFundraiser,
 			Selectors: Fundraiser.EditFundraiser
 		});
+		console.log('filled in form');
+
 		await page.click(General.CRUD.Publish);
-		await page.waitForSelector(`${General.CRUD.Publish}[disabled]`, {
+		console.log('clicked publish');
+		await page.screenshot({path: 'after publish.png'});
+		await page.waitForSelector(`${General.CRUD.Publish} span.spinning`, {
 			hidden: true
 		});
+		await page.waitForSelector(`${General.CRUD.Publish}[disabled]`, {
+			hidden: false
+		});
+		console.log('almost done');
 
 		// HACK: give ES a second to add event created above
 		await page.waitFor(3000);
@@ -128,7 +148,16 @@ describe("!!broken Fundraiser tests", () => {
 		await page.goto(`${url}#fundraiser/${fundraiserId}`);
 		await page.reload();
 
-		await doLogin({ page, username, password });
+		// TODO(anita): Replace this section with login() utility method used elsewhere.
+		await page.click('.login-link');
+		await page.click('[name=email]');
+		await page.type('[name=email]', username);
+		await page.click('[name=password]');
+		await page.type('[name=password]', password);
+		await page.keyboard.press('Enter');
+		// wait for login dialog to disappear
+		await page.waitForSelector('[name=email]', { hidden: true });
+		console.log('logged in');
 
 		// Click on Donate button
 		await page.waitForSelector('.btn');
@@ -184,7 +213,7 @@ describe("!!broken Fundraiser tests", () => {
 		await page.goto(`${url}#fundraiser/${fundraiserId}`);
 
 		// Wait for donate button
-		await page.waitForSelector('.btn');
+		await page.waitForSelector('.btn', { timeout: 10000 });
 		await page.click('.btn');
 
 		// Pick one time donation, select amount and move on
