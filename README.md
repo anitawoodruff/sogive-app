@@ -136,6 +136,8 @@ a high impact celebration.
 
 Not needed for UI edits, but if you want to do backend work...
 
+### Linux
+
 1. Install Java (e.g. via apt-get install)
 
 2. Install ElasticSearch. June 2020: We now use version 7
@@ -160,6 +162,18 @@ If you should want to run from the command line, it is `java -ea -cp build-lib/s
    - Test nginx is routing your local java SoGiveServer: http://local.sogive.org/manifest
    - Test your local web-app: http://local.sogive.org/
    
+### Mac OS
+
+1. Install [homebrew](https://brew.sh/)
+
+2. Install ElasticSearch with homebrew - https://www.elastic.co/guide/en/elasticsearch/reference/current/brew.html#brew
+
+3. Install Maven:
+
+       brew install maven
+
+4. Continue following Linux Instructions from Step 3 ('Install Bob').
+       
 
 ## Running the tests
 
